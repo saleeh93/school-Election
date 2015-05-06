@@ -1,0 +1,2 @@
+window.dash = window.dash || {};
+

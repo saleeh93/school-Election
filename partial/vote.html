@@ -1,0 +1,58 @@
+<div class="wrapper">
+    <div class="" style="margin-left: 100px;margin-right: 100px; background-color: #ecf0f5;">
+
+        <div class="login-logo">
+            <a href="#"><b>School</b> Election</a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="">
+                        <div class="box-header">
+                            <h3 class="box-title">Choose One</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form ng-submit="voteNow()">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-4" ng-repeat="item in candidateList">
+                                        <div class="box  box-solid" ng-click="select(item._id)"
+                                             ng-class="current==item._id ? 'box-success' : ''">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">{{item.name}}</h3>
+
+                                                <div class="box-tools pull-right">
+                                                    <button ng-click="removeCandidate(item._id)" data-widget="remove"
+                                                            class="btn btn-box-tool"><i class="fa fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                <!-- /.box-tools -->
+                                            </div>
+                                            <div class="box-body"><img width="200px" height="200px"
+                                                                       src="{{item.icon}}"/>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                        <!-- /.info-box -->
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Vote Now</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+</div>

@@ -1,11 +1,11 @@
 var Engine = require('tingodb')();
 var db = new Engine.Db('data/', {});
-
+var gui = require('nw.gui');
 var Users = db.collection("users");
 var Candidate = db.collection("candidate");
 
 var totalVotes = 0;
-var electionApp = angular.module('electionApp', ['ngRoute']);
+var electionApp = angular.module('electionApp', ['ngRoute', 'pascalprecht.translate']);
 function updateData($rootScope) {
     totalVotes = 0;
     Candidate.find({}, {sort: {"vote": -1}}).toArray(function (erroe, data) {
@@ -23,10 +23,19 @@ function updateData($rootScope) {
     });
 }
 
-electionApp.run(function ($rootScope, $location) {
+electionApp.run(function ($rootScope, $location, $translate) {
+    $rootScope.languages = [{
+        id: "enUS", title: "English"
+    },
+        {
+            id: "mi_IN", title: "Malayalam"
+        }
+    ]
+
+    $rootScope.language = "enUS";
     updateData($rootScope);
     $rootScope.removeCandidate = function (item) {
-        db.candidate.remove({_id: item}, {}, function (err, numRemoved) {
+        Candidate.remove({_id: item}, {}, function (err, numRemoved) {
             updateData($rootScope);
 
         });
@@ -37,6 +46,15 @@ electionApp.run(function ($rootScope, $location) {
 
         if (!$rootScope.$$phase) $rootScope.$apply()
 
+    };
+    $rootScope.changeLang = function () {
+        console.log($rootScope.language);
+        $translate.use($rootScope.language);
+
+    };
+    $rootScope.voteWindow = function () {
+        window.open('index.html#!/vote', '_blank', 'screenX=0,screenY=0,width=200,height=200,toolbar=false');
+   //     gui.Window.open('https://github.com');
     }
 
 
@@ -77,7 +95,14 @@ electionApp.config(['$routeProvider', '$locationProvider',
 
         $locationProvider.hashPrefix('!');
 
-    }]).directive('classRoute', function ($rootScope, $route) {
+    }]).config(function ($translateProvider) {
+    $translateProvider.useStaticFilesLoader({
+        prefix: 'languages/',
+        suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('enUS');
+
+}).directive('classRoute', function ($rootScope, $route) {
 
     return function (scope, elem, attr) {
         var previous = '';
@@ -148,8 +173,16 @@ electionApp
     })
     .controller('VoteCtrl', function ($scope, $rootScope) {
         $scope.select = function (id) {
-            console.log(id);
+            sel = "#cb-" + id;
+            $(sel).prop("checked", true);
+
             $scope.current = id;
+            Candidate.update({_id: $scope.current}, {$inc: {vote: 1}}, {upsert: true}, function (error, data) {
+                alert("Your Vote Has been Submitted");
+                $scope.current = null;
+                $scope.$apply();
+                updateData($rootScope);
+            })
 
         }
         $scope.voteNow = function () {
@@ -162,7 +195,7 @@ electionApp
                 $scope.current = null;
                 $scope.$apply();
                 updateData($rootScope);
-            })
+            });
         }
 
     }).controller('DashBoardCtrl', function ($scope, $rootScope, $location) {

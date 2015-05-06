@@ -4,7 +4,7 @@
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-        <p class="login-box-msg">Sign in to start your session</p>
+        <p class="login-box-msg">{{'SIGN_IN' | translate}}</p>
 
         <form ng-submit="login()">
             <div class="form-group has-feedback">
@@ -16,6 +16,13 @@
                 <input type="password" required id="password" class="form-control" placeholder="Password"
                        ng-model="password"/>
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="form-group">
+                <label>Language {{language}}</label>
+                <select class="form-control" ng-model="language" ng-change="changeLang()"
+                        ng-options="item.id as item.title for item in languages">
+
+                </select>
             </div>
             <div class="row">
                 <!-- /.col -->

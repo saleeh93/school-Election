@@ -9,50 +9,41 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="">
-                        <div class="box-header">
-                            <h3 class="box-title">Choose One</h3>
-                        </div>
-                        <!-- /.box-header -->
-                        <!-- form start -->
-                        <form ng-submit="voteNow()">
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-4" ng-repeat="item in candidateList">
-                                        <div class="box  box-solid" ng-click="select(item._id)"
-                                             ng-class="current==item._id ? 'box-success' : ''">
-                                            <div class="box-header with-border">
-                                                <h3 class="box-title">{{item.name}}</h3>
+                    <!-- /.box-header -->
+                    <!-- form start -->
 
-                                                <div class="box-tools pull-right">
-                                                    <button ng-click="removeCandidate(item._id)" data-widget="remove"
-                                                            class="btn btn-box-tool"><i class="fa fa-times"></i>
-                                                    </button>
-                                                </div>
-                                                <!-- /.box-tools -->
-                                            </div>
-                                            <div class="box-body"><img width="200px" height="200px"
-                                                                       src="{{item.icon}}"/>
-                                            </div>
-                                            <!-- /.info-box-content -->
-                                        </div>
-                                        <!-- /.info-box -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12 candidate-box" ng-repeat="item in candidateList"
+                                 ng-click="select(item._id)">
+                                <div class="info-box">
+                                            <span class="info-box-icon bg-aqua">
+                                                <img width="70px" height="70px"
+                                                     src="{{item.icon}}"/>
+                                            </span>
+                                    <span class="info-box-icon  pull-right checkbox">
+                                                  <input type="radio" id="cb-{{item._id}}" name="cb"/>
+                                                  <label for="cb-{{item._id}}"></label>
+                                                <span></span>
+                                            </span>
+
+                                    <div class="info-box-content">
+                                        <h1>{{item.name}}</h1>
                                     </div>
+
                                 </div>
-
+                                <!-- /.info-box -->
                             </div>
-                            <!-- /.box-body -->
 
-                            <div class="box-footer">
-                                <button type="submit" class="btn btn-primary">Vote Now</button>
-                            </div>
-                        </form>
+                        </div>
+
                     </div>
-                    <!-- /.box -->
-                </div>
-            </div>
 
+                </div>
+                <!-- /.box -->
+            </div>
         </div>
-        <!-- /.login-box-body -->
+
     </div>
+    <!-- /.login-box-body -->
 </div>

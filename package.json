@@ -13,6 +13,7 @@
     "angular-translate": "^2.7.0",
     "sweetalert": "^1.0.0-beta",
     "tingodb": "^0.3.4",
+    "toastr": "^2.0.4",
     "tungus": "0.0.4"
   },
   "node-main": "node-main.js"

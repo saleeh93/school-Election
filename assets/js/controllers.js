@@ -40,9 +40,25 @@ electionApp.run(function ($rootScope, $location, $translate) {
     $rootScope.language = "ml_IN";
     updateData($rootScope);
     $rootScope.removeCandidate = function (item) {
-        Candidate.remove({_id: item}, {}, function (err, numRemoved) {
-            updateData($rootScope);
+        swal({
+            title: "Delete",
+            text: "Do you want to delete candidate ",
+            type: "error",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            allowEscapeKey: false
 
+        }, function (isConfirm) {
+            if (isConfirm)
+                Candidate.remove({_id: item}, {}, function (err, numRemoved) {
+                    updateData($rootScope);
+                    toastr.info('Candidate Removed ');
+
+                });
+            swal.close();
         });
     }
     $rootScope.logout = function () {
@@ -285,30 +301,47 @@ electionApp
     .controller('CandidateCtrl', function ($scope, $rootScope) {
 
         $scope.saveCandidate = function () {
-
             icon = $("#icon").val();
-            Candidate.insert({name: $scope.candidate.name, icon: icon});
+            Candidate.insert({name: $scope.candidate.name, icon: icon}, function (error, data) {
+                $("#icon").val("");
+                toastr.info('Added ' + $scope.candidate.name);
+                $scope.candidate.name = "";
+
+
+            });
             updateData($rootScope);
 
         };
 
-    }).controller('SettingsCtrl', function ($scope) {
+    })
+    .controller('SettingsCtrl', function ($scope) {
         $scope.config = {"name": localStorage.schoolName};
         $scope.saveSettings = function () {
+            localStorage.schoolName = $scope.config.name;
+            toastr.info('Settings Updated');
+
+
+        };
+        $scope.updateBalletPassword = function () {
+            localStorage.schoolName = $scope.config.name;
+            toastr.info('Settings Updated');
+
+        };
+        $scope.updatePassword = function () {
             if ($scope.config.oldPassword == null || $scope.config.oldPassword == "") {
                 swal("Password", "You Need to enter Current password to update Settings", 'error');
                 return;
             }
             Users.findOne({username: sessionStorage.userId}, function (error, data) {
                 if (data.password == $scope.config.oldPassword) {
-                    localStorage.schoolName = $scope.config.name;
                     if ($scope.config.password != "")
                         localStorage.password = $scope.config.password;
-
-                    Users.update({username: data.username}, {$set: {password: $scope.config.newPassword}}, function (error, count) {
-
+                    if ($scope.config.newPassword != "")
+                        Users.update({username: data.username}, {$set: {password: $scope.config.newPassword}}, function (error, count) {
+                            swal("Updated", "Settings Has been Updated", 'success');
+                        })
+                    else
                         swal("Updated", "Settings Has been Updated", 'success');
-                    })
 
                 } else {
                     swal("Password", "Your Current password is Wrong", 'error');

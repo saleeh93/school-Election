@@ -11,14 +11,14 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>Dashboard</h1>
+            <h1>Settings</h1>
         </section>
 
         <!-- Main content -->
         <section class="content">
 
             <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="col-md-6 col-sm-12 col-xs-12">
                     <div class="box box-primary">
                         <div class="box-header">
                             <h3 class="box-title">Settings</h3>
@@ -34,17 +34,64 @@
                                            ng-model="config.name"
                                            placeholder="Enter Name">
                                 </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Profile</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form ng-submit="updateBalletPassword()">
+                            <div class="box-body">
+
                                 <div class="form-group">
                                     <label for="ballet-password">Ballet Password</label>
                                     <input type="password" class="form-control"
                                            id="ballet-password"
+                                           required
                                            ng-model="config.password"
                                            placeholder="Ballet password">
                                 </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Profile</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form ng-submit="updatePassword()">
+                            <div class="box-body">
+
+
                                 <div class="form-group">
                                     <label for="new-password">New Password</label>
                                     <input type="password" class="form-control"
                                            id="new-password"
+                                           required
                                            ng-model="config.newPassword"
                                            placeholder="New password">
                                 </div>
@@ -52,6 +99,7 @@
                                     <label for="old-password">Old Password</label>
                                     <input type="password" class="form-control"
                                            id="old-password"
+                                           required
                                            ng-model="config.oldPassword"
                                            placeholder="Old password">
                                 </div>

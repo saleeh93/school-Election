@@ -12,11 +12,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Dashboard
+                Candidates
             </h1>
             <ol class="breadcrumb">
                 <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Dashboard</li>
+                <li class="active">Candidates</li>
             </ol>
         </section>
 
@@ -24,7 +24,12 @@
         <section class="content">
             <!-- Info boxes -->
             <div class="row">
-                <div class="col-md-12" ng-repeat="item in candidateList">
+                <div class="col-md-6" ng-repeat="item in candidateList">
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="remove" ng-click="removeCandidate(item._id)">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
                     <div class="info-box">
                                             <span class="info-box-icon bg-aqua"><img width="70px" height="70px"
                                                                                      src="{{item.icon}}"/></span>
@@ -33,6 +38,7 @@
                             <h1>{{item.name}}</h1>
                         </div>
                         <!-- /.info-box-content -->
+
                     </div>
                     <!-- /.info-box -->
                 </div>
@@ -45,7 +51,7 @@
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        <form ng-submit="saveCandidate()" ng-controller="CandidateCtrl">
+                        <form ng-submit="saveCandidate()">
                             <div class="box-body">
                                 <div class="form-group">
                                     <label for="name">Name</label>

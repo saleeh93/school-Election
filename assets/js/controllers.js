@@ -1,7 +1,6 @@
 var gui = require('nw.gui');
 var Engine = require('tingodb')();
 var db = new Engine.Db(gui.App.dataPath + '', {});
-console.log(gui.App.dataPath + '/data/');
 var Users = db.collection("users");
 var Candidate = db.collection("candidate");
 
@@ -32,8 +31,13 @@ electionApp.run(function ($rootScope, $location, $translate) {
     }];
 
     $rootScope.schoolName = localStorage.schoolName;
+    $rootScope.fields = {
+        language: 'enUS'
+    };
 
-    $rootScope.language = "enUS";
+    $translate.use($rootScope.fields.language);
+
+    $rootScope.language = "ml_IN";
     updateData($rootScope);
     $rootScope.removeCandidate = function (item) {
         Candidate.remove({_id: item}, {}, function (err, numRemoved) {
@@ -48,8 +52,9 @@ electionApp.run(function ($rootScope, $location, $translate) {
 
     };
     $rootScope.changeLang = function () {
-        console.log($rootScope.language);
-        $translate.use($rootScope.language);
+
+        $translate.use($rootScope.fields.language);
+
 
     };
     $rootScope.voteWindow = function () {
@@ -134,7 +139,7 @@ electionApp.config(['$routeProvider', '$locationProvider',
         prefix: 'languages/',
         suffix: '.json'
     });
-    $translateProvider.preferredLanguage('enUS');
+//    $translateProvider.preferredLanguage('ml_IN');
 
 }).directive('classRoute', function ($rootScope, $route) {
     return function (scope, elem, attr) {
@@ -165,8 +170,6 @@ electionApp
         $scope.register = function () {
             localStorage.password = $scope.ballet_password;
             Users.insert({username: $scope.username, password: $scope.password}, function (error, data) {
-                console.log(error);
-                console.log(data[0]);
 
                 sessionStorage.userId = data[0].username;
 
@@ -175,8 +178,6 @@ electionApp
             });
         };
         Users.count(function (error, count) {
-            console.log(error);
-            console.log(count + "hh");
             if (count == 0) {
 
             } else {
@@ -197,7 +198,6 @@ electionApp
                 username: $scope.username,
                 password: $scope.password
             }, function (error, data) {
-                console.log("Yea");
                 if (data != null) {
                     sessionStorage.userId = data.username;
                     $location.path("/dashboard");

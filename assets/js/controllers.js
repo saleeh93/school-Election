@@ -1,6 +1,7 @@
-var Engine = require('tingodb')();
-var db = new Engine.Db('data/', {});
 var gui = require('nw.gui');
+var Engine = require('tingodb')();
+var db = new Engine.Db(gui.App.dataPath + '', {});
+console.log(gui.App.dataPath + '/data/');
 var Users = db.collection("users");
 var Candidate = db.collection("candidate");
 
@@ -26,11 +27,11 @@ function updateData($rootScope) {
 electionApp.run(function ($rootScope, $location, $translate) {
     $rootScope.languages = [{
         id: "enUS", title: "English"
-    },
-        {
-            id: "mi_IN", title: "Malayalam"
-        }
-    ]
+    }, {
+        id: "ml_IN", title: "Malayalam"
+    }];
+
+    $rootScope.schoolName = localStorage.schoolName;
 
     $rootScope.language = "enUS";
     updateData($rootScope);
@@ -43,7 +44,6 @@ electionApp.run(function ($rootScope, $location, $translate) {
     $rootScope.logout = function () {
         sessionStorage.removeItem("userId");
         $location.path("/login");
-
         if (!$rootScope.$$phase) $rootScope.$apply()
 
     };
@@ -53,8 +53,38 @@ electionApp.run(function ($rootScope, $location, $translate) {
 
     };
     $rootScope.voteWindow = function () {
-        window.open('index.html#!/vote', '_blank', 'screenX=0,screenY=0,width=200,height=200,toolbar=false');
-   //     gui.Window.open('https://github.com');
+        $location.path("/vote");
+        if (!$rootScope.$$phase) $rootScope.$apply()
+    }
+    $rootScope.goToDashboard = function () {
+        swal({
+            title: "Admin Password",
+            text: "Please enter Admin password",
+            type: "input",
+            closeOnConfirm: false,
+            showCancelButton: true,
+            animation: "slide-from-top",
+            inputPlaceholder: "Enter Password", inputType: "password"
+        }, function (inputValue) {
+            if (inputValue === false) return false;
+            if (inputValue === "") {
+                swal.showInputError("You need to Enter Password!");
+                return false
+            }
+            if (localStorage.password == inputValue) {
+
+
+                $location.path("/dashboard");
+                if (!$rootScope.$$phase) $rootScope.$apply()
+                swal.close();
+
+
+            } else {
+                swal.showInputError("Wrong password");
+                return false;
+            }
+
+        });
     }
 
 
@@ -78,6 +108,10 @@ electionApp.config(['$routeProvider', '$locationProvider',
             when('/candidate', {
                 templateUrl: 'partial/candidates.html',
                 controller: 'CandidateCtrl'
+            }).
+            when('/settings', {
+                templateUrl: 'partial/settings.html',
+                controller: 'SettingsCtrl'
             }).
             when('/vote', {
                 templateUrl: 'partial/vote.html',
@@ -103,7 +137,6 @@ electionApp.config(['$routeProvider', '$locationProvider',
     $translateProvider.preferredLanguage('enUS');
 
 }).directive('classRoute', function ($rootScope, $route) {
-
     return function (scope, elem, attr) {
         var previous = '';
         $rootScope.$on('$routeChangeSuccess', function (event, currentRoute) {
@@ -130,11 +163,19 @@ electionApp.config(['$routeProvider', '$locationProvider',
 electionApp
     .controller('RegCtrl', function ($scope, $location) {
         $scope.register = function () {
+            localStorage.password = $scope.ballet_password;
             Users.insert({username: $scope.username, password: $scope.password}, function (error, data) {
+                console.log(error);
                 console.log(data[0]);
+
+                sessionStorage.userId = data[0].username;
+
+                $location.path("/dashboard");
+                if (!$scope.$$phase) $scope.$apply()
             });
         };
         Users.count(function (error, count) {
+            console.log(error);
             console.log(count + "hh");
             if (count == 0) {
 
@@ -171,32 +212,66 @@ electionApp
 
 
     })
-    .controller('VoteCtrl', function ($scope, $rootScope) {
+    .controller('VoteCtrl', function ($scope, $rootScope, $location) {
         $scope.select = function (id) {
             sel = "#cb-" + id;
             $(sel).prop("checked", true);
 
             $scope.current = id;
             Candidate.update({_id: $scope.current}, {$inc: {vote: 1}}, {upsert: true}, function (error, data) {
-                alert("Your Vote Has been Submitted");
                 $scope.current = null;
                 $scope.$apply();
                 updateData($rootScope);
+                swal({
+                    title: "Thank you",
+                    text: "You vote has been submitted",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonText: "New Ballet",
+                    cancelButtonText: "Dashboard",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+                    allowEscapeKey: false
+
+                }, function (isConfirm) {
+                    swal({
+                        title: "Admin Password",
+                        text: "Please enter Admin password",
+                        type: "input",
+                        closeOnConfirm: false,
+                        allowEscapeKey: false,
+                        animation: "slide-from-top",
+                        inputPlaceholder: "Enter Password", inputType: "password"
+                    }, function (inputValue) {
+                        if (inputValue === false) return false;
+                        if (inputValue === "") {
+                            swal.showInputError("You need to Enter Password!");
+                            return false
+                        }
+                        if (localStorage.password == inputValue) {
+
+                            swal.close();
+
+                            if (isConfirm) {
+
+
+                            } else {
+                                $location.path("/dashboard");
+                                if (!$scope.$$phase) $scope.$apply()
+
+                            }
+                        } else {
+                            swal.showInputError("Wrong password");
+                            return false;
+                        }
+
+                    });
+
+                });
             })
 
         }
-        $scope.voteNow = function () {
-            if ($scope.current == null) {
-                alert("Please Select One");
-                return;
-            }
-            Candidate.update({_id: $scope.current}, {$inc: {vote: 1}}, {upsert: true}, function (error, data) {
-                alert("Your Vote Has been Submitted");
-                $scope.current = null;
-                $scope.$apply();
-                updateData($rootScope);
-            });
-        }
+
 
     }).controller('DashBoardCtrl', function ($scope, $rootScope, $location) {
         if (sessionStorage.userId == null) {
@@ -208,13 +283,22 @@ electionApp
     }).controller('CandidateCtrl', function ($scope, $rootScope) {
 
         $scope.saveCandidate = function () {
-            console.log("Hello");
+
             icon = $("#icon").val();
             Candidate.insert({name: $scope.candidate.name, icon: icon});
             updateData($rootScope);
 
         };
 
+    }).controller('SettingsCtrl', function ($scope) {
+        $scope.config = {"name": localStorage.schoolName};
+        $scope.saveSettings = function () {
+            localStorage.schoolName = $scope.config.name;
+
+            localStorage.password = $scope.config.password;
+            swal("Updated", "Settings Has been Updated", 'success');
+
+        }
     })
 
 

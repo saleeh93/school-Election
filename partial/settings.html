@@ -1,0 +1,68 @@
+<div class="wrapper">
+
+    <ng-include src="'partial/nav.html'"></ng-include>
+    <!-- Left side column. contains the logo and sidebar -->
+
+    <ng-include src="'partial/sidebar.html'"></ng-include>
+    <!-- Left side column. contains the logo and sidebar -->
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>Dashboard</h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Settings</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form ng-submit="saveSettings()">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="name">School Name</label>
+                                    <input type="text" required class="form-control" id="name"
+                                           ng-model="config.name"
+                                           placeholder="Enter Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ballet-password">Ballet Password</label>
+                                    <input type="password" class="form-control" id="ballet-password"
+                                           ng-model="config.password"
+                                           placeholder="Ballet password">
+                                </div>
+
+
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+
+            </div>
+            <!-- /.row -->
+
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <ng-include src="'partial/footer.html'"></ng-include>
+
+</div>
+<!-- ./wrapper -->

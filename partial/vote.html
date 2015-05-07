@@ -2,7 +2,7 @@
     <div class="" style="margin-left: 100px;margin-right: 100px; background-color: #ecf0f5;">
 
         <div class="login-logo">
-            <a href="#"><b>School</b> Election</a>
+            <a href="">{{schoolName}}</a>
         </div>
         <!-- /.login-logo -->
         <div class="">
@@ -37,6 +37,10 @@
 
                         </div>
 
+                    </div>
+                    <div class="box-footer clearfix">
+                        <h2 class="pull-left">Total Votes:{{totalVotes}}</h2>
+                        <a ng-click="goToDashboard()" class="btn btn-lg btn-default btn-flat pull-right">Dashboard</a>
                     </div>
 
                 </div>

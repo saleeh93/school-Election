@@ -9,7 +9,7 @@ var totalVotes = 0;
 var electionApp = angular.module('electionApp', ['ngRoute', 'pascalprecht.translate']);
 function updateData($rootScope) {
     totalVotes = 0;
-    Candidate.find({}, {sort: {"vote": -1}}).toArray(function (erroe, data) {
+    Candidate.find({}).toArray(function (erroe, data) {
         $rootScope.candidateList = data;
         for (single in data) {
             if (data[single].vote != null)
@@ -203,7 +203,7 @@ electionApp
                     $location.path("/dashboard");
                     if (!$scope.$$phase) $scope.$apply()
                 } else {
-                    alert("Invalid Username or password");
+                    swal("Error", "Invalid Username or password", "error");
                 }
             });
 
@@ -273,14 +273,16 @@ electionApp
         }
 
 
-    }).controller('DashBoardCtrl', function ($scope, $rootScope, $location) {
+    })
+    .controller('DashBoardCtrl', function ($scope, $rootScope, $location) {
         if (sessionStorage.userId == null) {
             $location.path("/login");
         }
         $rootScope.username = sessionStorage.userId;
 
 
-    }).controller('CandidateCtrl', function ($scope, $rootScope) {
+    })
+    .controller('CandidateCtrl', function ($scope, $rootScope) {
 
         $scope.saveCandidate = function () {
 
@@ -293,10 +295,28 @@ electionApp
     }).controller('SettingsCtrl', function ($scope) {
         $scope.config = {"name": localStorage.schoolName};
         $scope.saveSettings = function () {
-            localStorage.schoolName = $scope.config.name;
+            if ($scope.config.oldPassword == null || $scope.config.oldPassword == "") {
+                swal("Password", "You Need to enter Current password to update Settings", 'error');
+                return;
+            }
+            Users.findOne({username: sessionStorage.userId}, function (error, data) {
+                if (data.password == $scope.config.oldPassword) {
+                    localStorage.schoolName = $scope.config.name;
+                    if ($scope.config.password != "")
+                        localStorage.password = $scope.config.password;
 
-            localStorage.password = $scope.config.password;
-            swal("Updated", "Settings Has been Updated", 'success');
+                    Users.update({username: data.username}, {$set: {password: $scope.config.newPassword}}, function (error, count) {
+
+                        swal("Updated", "Settings Has been Updated", 'success');
+                    })
+
+                } else {
+                    swal("Password", "Your Current password is Wrong", 'error');
+
+                }
+
+            });
+
 
         }
     })

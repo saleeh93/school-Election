@@ -314,16 +314,18 @@ electionApp
         };
 
     })
-    .controller('SettingsCtrl', function ($scope) {
+    .controller('SettingsCtrl', function ($scope, $rootScope) {
         $scope.config = {"name": localStorage.schoolName};
         $scope.saveSettings = function () {
             localStorage.schoolName = $scope.config.name;
+
+            $rootScope.schoolName = localStorage.schoolName;
             toastr.info('Settings Updated');
 
 
         };
         $scope.updateBalletPassword = function () {
-            localStorage.schoolName = $scope.config.name;
+            localStorage.password = $scope.config.password;
             toastr.info('Settings Updated');
 
         };
@@ -334,8 +336,7 @@ electionApp
             }
             Users.findOne({username: sessionStorage.userId}, function (error, data) {
                 if (data.password == $scope.config.oldPassword) {
-                    if ($scope.config.password != "")
-                        localStorage.password = $scope.config.password;
+
                     if ($scope.config.newPassword != "")
                         Users.update({username: data.username}, {$set: {password: $scope.config.newPassword}}, function (error, count) {
                             swal("Updated", "Settings Has been Updated", 'success');

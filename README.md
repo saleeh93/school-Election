@@ -20,5 +20,6 @@ Download this project, and run
 
 ````
 $> cd PATH-TO-THIS-REPO
+$> npm install
 $> PATH-TO-NODE-WEBKIT/nw ./
 ```
